@@ -7,7 +7,7 @@ namespace Ui {
 class TransformationWidget;
 }
 
-class CTransformationWidget : public QWidget
+class CTransformationWidget: public QWidget
 {
     Q_OBJECT
 
@@ -17,9 +17,11 @@ public:
 
 private slots:
     void updateSettings( const QString& name );
+    void startProcessing();
 
 private:
     void setupUi();
+    bool checkInput();
 
     Ui::TransformationWidget *m_ui;
 };

@@ -19,13 +19,28 @@
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout">
        <item>
-        <widget class="QPlainTextEdit" name="xCoordEdit"/>
+        <widget class="QPlainTextEdit" name="xCoordEdit">
+         <property name="placeholderText">
+          <string>xCoord</string>
+         </property>
+        </widget>
        </item>
        <item>
-        <widget class="QPlainTextEdit" name="yCoordEdit"/>
+        <widget class="QPlainTextEdit" name="yCoordEdit">
+         <property name="placeholderText">
+          <string>yCoord</string>
+         </property>
+        </widget>
        </item>
        <item>
-        <widget class="QPlainTextEdit" name="zCoordEdit"/>
+        <widget class="QPlainTextEdit" name="zCoordEdit">
+         <property name="plainText">
+          <string>1</string>
+         </property>
+         <property name="placeholderText">
+          <string>H</string>
+         </property>
+        </widget>
        </item>
        <item>
         <widget class="QComboBox" name="transformationComboBox">
@@ -64,10 +79,18 @@
          <item>
           <layout class="QHBoxLayout" name="horizontalLayout_2">
            <item>
-            <widget class="QPlainTextEdit" name="firstParameter"/>
+            <widget class="QPlainTextEdit" name="firstParameter">
+             <property name="placeholderText">
+              <string>first parameter</string>
+             </property>
+            </widget>
            </item>
            <item>
-            <widget class="QPlainTextEdit" name="secondParameter"/>
+            <widget class="QPlainTextEdit" name="secondParameter">
+             <property name="placeholderText">
+              <string>second parameter</string>
+             </property>
+            </widget>
            </item>
           </layout>
          </item>

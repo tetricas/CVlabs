@@ -1,7 +1,8 @@
 #include "Transformation/TransformationWidget.h"
 #include "ui_transformationwidget.h"
 
-#include "QMessageBox"
+#include <QMessageBox>
+#include <QRegExp>
 
 CTransformationWidget::CTransformationWidget( QWidget *parent ) :
     QWidget( parent ),
@@ -35,9 +36,34 @@ void CTransformationWidget::updateSettings( const QString& name )
     }
 }
 
+void CTransformationWidget::startProcessing()
+{
+    if( !checkInput() )
+        QMessageBox::about( this, "Input", "Invalid input" );
+}
+
 void CTransformationWidget::setupUi()
 {
     m_ui->transformationComboBox->addItems( { "Scale", "Rotate", "Move" } );
     connect( m_ui->transformationComboBox, &QComboBox::currentTextChanged,
              this, &CTransformationWidget::updateSettings );
+
+    connect( m_ui->startBtn, &QPushButton::clicked,
+             this, &CTransformationWidget::startProcessing );
+}
+
+bool CTransformationWidget::checkInput()
+{
+    QRegExp xCoorgReg("(\\d+|-\\d+)(x)|(\\d+|-\\d+)"),
+            yCoorgReg("(\\d+|-\\d+)(y)|(\\d+|-\\d+)"),
+            digitReg("(\\d+|-\\d+)");
+
+    if( xCoorgReg.exactMatch( m_ui->xCoordEdit->toPlainText() )&&
+            yCoorgReg.exactMatch( m_ui->yCoordEdit->toPlainText() ) &&
+            digitReg.exactMatch( m_ui->zCoordEdit->toPlainText() ) &&
+            digitReg.exactMatch( m_ui->firstParameter->toPlainText() ) &&
+            digitReg.exactMatch( m_ui->secondParameter->toPlainText() ) )
+        return true;
+
+    return false;
 }
