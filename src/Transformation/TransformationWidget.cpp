@@ -39,7 +39,10 @@ void CTransformationWidget::updateSettings( const QString& name )
 void CTransformationWidget::startProcessing()
 {
     if( !checkInput() )
+    {
         QMessageBox::about( this, "Input", "Invalid input" );
+        return;
+    }
 }
 
 void CTransformationWidget::setupUi()
@@ -54,16 +57,34 @@ void CTransformationWidget::setupUi()
 
 bool CTransformationWidget::checkInput()
 {
-    QRegExp xCoorgReg("(\\d+|-\\d+)(x)|(\\d+|-\\d+)"),
-            yCoorgReg("(\\d+|-\\d+)(y)|(\\d+|-\\d+)"),
+    QRegExp xCoorgReg("(\\d+|-\\d+)(x)"),
+            yCoorgReg("(\\d+|-\\d+)(y)"),
             digitReg("(\\d+|-\\d+)");
 
-    if( xCoorgReg.exactMatch( m_ui->xCoordEdit->toPlainText() )&&
-            yCoorgReg.exactMatch( m_ui->yCoordEdit->toPlainText() ) &&
-            digitReg.exactMatch( m_ui->zCoordEdit->toPlainText() ) &&
-            digitReg.exactMatch( m_ui->firstParameter->toPlainText() ) &&
-            digitReg.exactMatch( m_ui->secondParameter->toPlainText() ) )
-        return true;
+    // at the following comments "*" - any digit
+    if( ( xCoorgReg.exactMatch( m_ui->xCoordEdit->toPlainText() ) &&
+          !yCoorgReg.exactMatch( m_ui->yCoordEdit->toPlainText() ) ) ||  // *x and !*y
+            ( digitReg.exactMatch( m_ui->xCoordEdit->toPlainText() ) &&
+              !digitReg.exactMatch( m_ui->yCoordEdit->toPlainText() ) ) ||  // * and !*
+            ( !xCoorgReg.exactMatch( m_ui->xCoordEdit->toPlainText() ) &&
+              yCoorgReg.exactMatch( m_ui->yCoordEdit->toPlainText() ) ) ||  // *!x and *y
+            ( !digitReg.exactMatch( m_ui->xCoordEdit->toPlainText() ) &&
+              digitReg.exactMatch( m_ui->yCoordEdit->toPlainText() ) ) )  // !* and *
+        return false;
+
+    if( xCoorgReg.exactMatch( m_ui->xCoordEdit->toPlainText() ) &&
+            yCoorgReg.exactMatch( m_ui->yCoordEdit->toPlainText() ) )  // *x and *y
+        m_itHasLiterals = true;
+    else                                        // * and *
+        m_itHasLiterals = false;
+
+    if( !digitReg.exactMatch( m_ui->zCoordEdit->toPlainText() ) ||
+            !digitReg.exactMatch( m_ui->firstParameter->toPlainText() ) ||
+            !digitReg.exactMatch( m_ui->secondParameter->toPlainText() ) )
+        return false;
+
+    return true;
+}
 
     return false;
 }
