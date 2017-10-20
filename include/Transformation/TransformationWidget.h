@@ -2,6 +2,7 @@
 #define TRANSFORMATIONWIDGET_H
 
 #include <QWidget>
+#include <QGenericMatrix>
 
 namespace Ui {
 class TransformationWidget;
@@ -30,6 +31,7 @@ private:
     void setupUi();
     bool checkInput();
     void getCoords();
+    void getParams();
 
     void scaleProcess();
     void rotateProcess();
@@ -39,7 +41,8 @@ private:
 
     ETransformaions m_currentTransformation;
     bool m_itHasLiterals;
-    QPoint m_coords;
+    QGenericMatrix<1, 2, qreal> m_coordsVector;
+    QPair<int, int> m_params;
 };
 
 #endif // TRANSFORMATIONWIDGET_H

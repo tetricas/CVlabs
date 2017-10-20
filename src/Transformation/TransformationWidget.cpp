@@ -3,6 +3,7 @@
 
 #include <QMessageBox>
 #include <QRegExp>
+#include <QtMath>
 
 CTransformationWidget::CTransformationWidget( QWidget *parent ) :
     QWidget( parent ),
@@ -48,6 +49,7 @@ void CTransformationWidget::startProcessing()
         return;
     }
 
+    m_coordsVector.fill( 0 );
     getCoords();
 
     switch (m_currentTransformation)
@@ -111,29 +113,53 @@ void CTransformationWidget::getCoords()
 {
     if( !m_itHasLiterals )
     {
-        m_coords.setX( m_ui->xCoordEdit->toPlainText().toInt() );
-        m_coords.setY( m_ui->yCoordEdit->toPlainText().toInt() );
+        m_coordsVector( 0, 0 ) = m_ui->xCoordEdit->toPlainText().toInt();
+        m_coordsVector( 1, 0 ) = m_ui->yCoordEdit->toPlainText().toInt();
     }
     else
     {
         QRegExp digitReg("(\\d+|-\\d+)");
 
         digitReg.indexIn( m_ui->xCoordEdit->toPlainText() );
-        m_coords.setX( digitReg.cap(1).toInt() );
+        m_coordsVector( 0, 0 ) = digitReg.cap(1).toInt();
 
         digitReg.indexIn( m_ui->yCoordEdit->toPlainText() );
-        m_coords.setY( digitReg.cap(1).toInt() );
+        m_coordsVector( 1, 0 ) = digitReg.cap(1).toInt();
     }
+}
+
+void CTransformationWidget::getParams()
+{
+    m_params = QPair<int, int>( m_ui->firstParameter->toPlainText().toInt(),
+                                m_ui->secondParameter->toPlainText().toInt() );
 }
 
 void CTransformationWidget::scaleProcess()
 {
+    QGenericMatrix<2, 2, qreal> scaleMatrix( 0 );
+    scaleMatrix( 0, 0 ) = m_params.first;
+    scaleMatrix( 1, 1 ) = m_params.second;
 
+    m_coordsVector = scaleMatrix * m_coordsVector;
+
+//    QString str;
+//    QTextStream stream( &str );
+//    stream << scaleMatrix;
+//    m_ui->resultLabel->setText( str );
 }
 
 void CTransformationWidget::rotateProcess()
 {
+    QGenericMatrix<2, 2, qreal> rotateMatrix;
+    rotateMatrix( 0, 0 ) = rotateMatrix( 1, 1 ) = qCos( m_params.first );
+    rotateMatrix( 0, 1 ) = rotateMatrix( 1, 0 ) = qSin( m_params.first );
 
+    if( m_params.first < 0 )
+        rotateMatrix( 0, 1 ) *= -1;
+    else
+        rotateMatrix( 1, 0 ) *= -1;
+
+    m_coordsVector = rotateMatrix * m_coordsVector;
 }
 
 void CTransformationWidget::moveProcess()
