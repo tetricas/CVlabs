@@ -4,6 +4,7 @@
 #include <QMessageBox>
 #include <QRegExp>
 #include <QtMath>
+#include <QtDebug>
 
 CTransformationWidget::CTransformationWidget( QWidget *parent ) :
     QWidget( parent ),
@@ -12,6 +13,9 @@ CTransformationWidget::CTransformationWidget( QWidget *parent ) :
 {
     m_ui->setupUi(this);
     setupUi();
+
+    m_leftBottom.first = m_topRight.second = 1;     //{{ 0, R }     first - row
+    m_leftBottom.second = m_topRight.first = 0;     // { L, 0 }}    second - column
 }
 
 CTransformationWidget::~CTransformationWidget()
@@ -49,8 +53,10 @@ void CTransformationWidget::startProcessing()
         return;
     }
 
+    m_inputVector.fill( 0 );
     m_coordsVector.fill( 0 );
     getCoords();
+    getParams();
 
     switch (m_currentTransformation)
     {
@@ -66,6 +72,8 @@ void CTransformationWidget::startProcessing()
     default:
         break;
     }
+
+    outputResults();
 }
 
 void CTransformationWidget::setupUi()
@@ -102,7 +110,9 @@ bool CTransformationWidget::checkInput()
         m_itHasLiterals = false;
 
     if( !digitReg.exactMatch( m_ui->zCoordEdit->toPlainText() ) ||
-            !digitReg.exactMatch( m_ui->firstParameter->toPlainText() ) ||
+            !digitReg.exactMatch( m_ui->firstParameter->toPlainText() ) )
+        return false;
+    if( m_currentTransformation != ETransformaions::Rotate &&
             !digitReg.exactMatch( m_ui->secondParameter->toPlainText() ) )
         return false;
 
@@ -126,43 +136,63 @@ void CTransformationWidget::getCoords()
         digitReg.indexIn( m_ui->yCoordEdit->toPlainText() );
         m_coordsVector( 1, 0 ) = digitReg.cap(1).toInt();
     }
+    m_inputVector( 0, 0 ) = m_coordsVector( 0, 0 );
+    m_inputVector( 1, 0 ) = m_coordsVector( 1, 0 );
 }
 
 void CTransformationWidget::getParams()
 {
-    m_params = QPair<int, int>( m_ui->firstParameter->toPlainText().toInt(),
+    m_params = QPair<qreal, qreal>( m_ui->firstParameter->toPlainText().toInt(),
                                 m_ui->secondParameter->toPlainText().toInt() );
 }
 
 void CTransformationWidget::scaleProcess()
 {
-    QGenericMatrix<2, 2, qreal> scaleMatrix( 0 );
-    scaleMatrix( 0, 0 ) = m_params.first;
-    scaleMatrix( 1, 1 ) = m_params.second;
+    m_transformationMatrix.fill( 0 );
+    m_transformationMatrix( 0, 0 ) = m_params.first;
+    m_transformationMatrix( 1, 1 ) = m_params.second;
 
-    m_coordsVector = scaleMatrix * m_coordsVector;
-
-//    QString str;
-//    QTextStream stream( &str );
-//    stream << scaleMatrix;
-//    m_ui->resultLabel->setText( str );
+    m_coordsVector = m_transformationMatrix * m_coordsVector;
 }
 
 void CTransformationWidget::rotateProcess()
 {
-    QGenericMatrix<2, 2, qreal> rotateMatrix;
-    rotateMatrix( 0, 0 ) = rotateMatrix( 1, 1 ) = qCos( m_params.first );
-    rotateMatrix( 0, 1 ) = rotateMatrix( 1, 0 ) = qSin( m_params.first );
+    m_transformationMatrix( 0, 0 ) = m_transformationMatrix( 1, 1 ) = qCos( m_params.first );
+    m_transformationMatrix( 0, 1 ) = m_transformationMatrix( 1, 0 ) = qSin( m_params.first );
 
     if( m_params.first < 0 )
-        rotateMatrix( 0, 1 ) *= -1;
+        m_transformationMatrix( m_leftBottom.first, m_leftBottom.second ) *= -1;
     else
-        rotateMatrix( 1, 0 ) *= -1;
+        m_transformationMatrix( m_topRight.first, m_topRight.second ) *= -1;
 
-    m_coordsVector = rotateMatrix * m_coordsVector;
+    m_coordsVector = m_transformationMatrix * m_coordsVector;
 }
 
 void CTransformationWidget::moveProcess()
 {
+    m_coordsVector( 0, 0 ) += m_params.first;
+    m_coordsVector( 1, 0 ) += m_params.second;
+    m_transformationMatrix.fill( 0 );
+}
 
+void CTransformationWidget::outputResults()
+{
+    QString input, transformation, output;
+    QTextStream streamIn(&input), streamTrans(&transformation), streamOut(&output);
+
+    streamIn << "Input vector: \n"
+             << "|\t"<< m_inputVector( 0, 0 ) << "\t|\n"
+             << "|\t"<< m_inputVector( 1, 0 ) << "\t|";
+
+    streamTrans << "Transformation matrix: \n"
+                << "|\t"<< m_transformationMatrix( 0, 0 )<< ",\t"<< m_transformationMatrix( 0, 1 ) << "\t|\n"
+                << "|\t"<< m_transformationMatrix( 1, 0 )<< ",\t"<< m_transformationMatrix( 1, 1 ) << "\t|";
+
+    streamOut << "Resul vector: \n"
+              << "|\t"<< m_coordsVector( 0, 0 ) << "\t|\n"
+              << "|\t"<< m_coordsVector( 1, 0 ) << "\t|";
+
+    m_ui->inputLabel->setText( input );
+    m_ui->transformLabel->setText( transformation );
+    m_ui->outputLabel->setText( output );
 }

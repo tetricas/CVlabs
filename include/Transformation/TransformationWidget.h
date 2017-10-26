@@ -37,12 +37,20 @@ private:
     void rotateProcess();
     void moveProcess();
 
+    void outputResults();
+
     Ui::TransformationWidget *m_ui;
 
     ETransformaions m_currentTransformation;
     bool m_itHasLiterals;
+
+    QGenericMatrix<1, 2, qreal> m_inputVector;
     QGenericMatrix<1, 2, qreal> m_coordsVector;
-    QPair<int, int> m_params;
+    QGenericMatrix<2, 2, qreal> m_transformationMatrix;
+    QPair<qreal, qreal> m_params;
+
+    QPair<qreal, qreal> m_leftBottom;
+    QPair<qreal, qreal> m_topRight;
 };
 
 #endif // TRANSFORMATIONWIDGET_H
