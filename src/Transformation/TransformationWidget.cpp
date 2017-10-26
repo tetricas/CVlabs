@@ -13,9 +13,6 @@ CTransformationWidget::CTransformationWidget( QWidget *parent ) :
 {
     m_ui->setupUi(this);
     setupUi();
-
-    m_leftBottom.first = m_topRight.second = 1;     //{{ 0, R }     first - row
-    m_leftBottom.second = m_topRight.first = 0;     // { L, 0 }}    second - column
 }
 
 CTransformationWidget::~CTransformationWidget()
@@ -47,33 +44,42 @@ void CTransformationWidget::updateSettings( const QString& name )
 
 void CTransformationWidget::startProcessing()
 {
-    if( !checkInput() )
+    if( checkHomogeneous() )
+    {
+        m_transformation = QSharedPointer<CTransformationHomogeneous>::create(m_ui);
+        qDebug() << "CTransformationHomogeneous";
+    }
+    else
+    {
+        m_transformation = QSharedPointer<CTransformationNormal>::create(m_ui);
+        qDebug() << "CTransformationNormal";
+    }
+
+    if( !m_transformation->checkInput( m_currentTransformation != ETransformaions::Rotate ) )
     {
         QMessageBox::about( this, "Input", "Invalid input" );
         return;
     }
 
-    m_inputVector.fill( 0 );
-    m_coordsVector.fill( 0 );
-    getCoords();
-    getParams();
+    m_transformation->getCoords();
+    m_transformation->getParams();
 
     switch (m_currentTransformation)
     {
     case ETransformaions::Scale:
-        scaleProcess();
+        m_transformation->scaleProcess();
         break;
     case ETransformaions::Rotate:
-        rotateProcess();
+        m_transformation->rotateProcess();
         break;
     case ETransformaions::Move:
-        moveProcess();
+        m_transformation->moveProcess();
         break;
     default:
         break;
     }
 
-    outputResults();
+    m_transformation->outputResults();
 }
 
 void CTransformationWidget::setupUi()
@@ -86,113 +92,7 @@ void CTransformationWidget::setupUi()
              this, &CTransformationWidget::startProcessing );
 }
 
-bool CTransformationWidget::checkInput()
+bool CTransformationWidget::checkHomogeneous()
 {
-    QRegExp xCoorgReg("(\\d+|-\\d+)(x)"),
-            yCoorgReg("(\\d+|-\\d+)(y)"),
-            digitReg("(\\d+|-\\d+)");
-
-    // at the following comments "*" - any digit
-    if( ( xCoorgReg.exactMatch( m_ui->xCoordEdit->toPlainText() ) &&
-          !yCoorgReg.exactMatch( m_ui->yCoordEdit->toPlainText() ) ) ||  // *x and !*y
-            ( digitReg.exactMatch( m_ui->xCoordEdit->toPlainText() ) &&
-              !digitReg.exactMatch( m_ui->yCoordEdit->toPlainText() ) ) ||  // * and !*
-            ( !xCoorgReg.exactMatch( m_ui->xCoordEdit->toPlainText() ) &&
-              yCoorgReg.exactMatch( m_ui->yCoordEdit->toPlainText() ) ) ||  // *!x and *y
-            ( !digitReg.exactMatch( m_ui->xCoordEdit->toPlainText() ) &&
-              digitReg.exactMatch( m_ui->yCoordEdit->toPlainText() ) ) )  // !* and *
-        return false;
-
-    if( xCoorgReg.exactMatch( m_ui->xCoordEdit->toPlainText() ) &&
-            yCoorgReg.exactMatch( m_ui->yCoordEdit->toPlainText() ) )  // *x and *y
-        m_itHasLiterals = true;
-    else                                        // * and *
-        m_itHasLiterals = false;
-
-    if( !digitReg.exactMatch( m_ui->zCoordEdit->toPlainText() ) ||
-            !digitReg.exactMatch( m_ui->firstParameter->toPlainText() ) )
-        return false;
-    if( m_currentTransformation != ETransformaions::Rotate &&
-            !digitReg.exactMatch( m_ui->secondParameter->toPlainText() ) )
-        return false;
-
-    return true;
-}
-
-void CTransformationWidget::getCoords()
-{
-    if( !m_itHasLiterals )
-    {
-        m_coordsVector( 0, 0 ) = m_ui->xCoordEdit->toPlainText().toInt();
-        m_coordsVector( 1, 0 ) = m_ui->yCoordEdit->toPlainText().toInt();
-    }
-    else
-    {
-        QRegExp digitReg("(\\d+|-\\d+)");
-
-        digitReg.indexIn( m_ui->xCoordEdit->toPlainText() );
-        m_coordsVector( 0, 0 ) = digitReg.cap(1).toInt();
-
-        digitReg.indexIn( m_ui->yCoordEdit->toPlainText() );
-        m_coordsVector( 1, 0 ) = digitReg.cap(1).toInt();
-    }
-    m_inputVector( 0, 0 ) = m_coordsVector( 0, 0 );
-    m_inputVector( 1, 0 ) = m_coordsVector( 1, 0 );
-}
-
-void CTransformationWidget::getParams()
-{
-    m_params = QPair<qreal, qreal>( m_ui->firstParameter->toPlainText().toInt(),
-                                m_ui->secondParameter->toPlainText().toInt() );
-}
-
-void CTransformationWidget::scaleProcess()
-{
-    m_transformationMatrix.fill( 0 );
-    m_transformationMatrix( 0, 0 ) = m_params.first;
-    m_transformationMatrix( 1, 1 ) = m_params.second;
-
-    m_coordsVector = m_transformationMatrix * m_coordsVector;
-}
-
-void CTransformationWidget::rotateProcess()
-{
-    m_transformationMatrix( 0, 0 ) = m_transformationMatrix( 1, 1 ) = qCos( m_params.first );
-    m_transformationMatrix( 0, 1 ) = m_transformationMatrix( 1, 0 ) = qSin( m_params.first );
-
-    if( m_params.first < 0 )
-        m_transformationMatrix( m_leftBottom.first, m_leftBottom.second ) *= -1;
-    else
-        m_transformationMatrix( m_topRight.first, m_topRight.second ) *= -1;
-
-    m_coordsVector = m_transformationMatrix * m_coordsVector;
-}
-
-void CTransformationWidget::moveProcess()
-{
-    m_coordsVector( 0, 0 ) += m_params.first;
-    m_coordsVector( 1, 0 ) += m_params.second;
-    m_transformationMatrix.fill( 0 );
-}
-
-void CTransformationWidget::outputResults()
-{
-    QString input, transformation, output;
-    QTextStream streamIn(&input), streamTrans(&transformation), streamOut(&output);
-
-    streamIn << "Input vector: \n"
-             << "|\t"<< m_inputVector( 0, 0 ) << "\t|\n"
-             << "|\t"<< m_inputVector( 1, 0 ) << "\t|";
-
-    streamTrans << "Transformation matrix: \n"
-                << "|\t"<< m_transformationMatrix( 0, 0 )<< ",\t"<< m_transformationMatrix( 0, 1 ) << "\t|\n"
-                << "|\t"<< m_transformationMatrix( 1, 0 )<< ",\t"<< m_transformationMatrix( 1, 1 ) << "\t|";
-
-    streamOut << "Resul vector: \n"
-              << "|\t"<< m_coordsVector( 0, 0 ) << "\t|\n"
-              << "|\t"<< m_coordsVector( 1, 0 ) << "\t|";
-
-    m_ui->inputLabel->setText( input );
-    m_ui->transformLabel->setText( transformation );
-    m_ui->outputLabel->setText( output );
+    return m_ui->zCoordEdit->toPlainText().toInt() != 1;
 }

@@ -17,12 +17,18 @@ INCLUDEPATH += ../include/
 
 HEADERS += \
         ../include/Transformation/TransformationWidget.h \
-        ../include/MainWindow.h
+        ../include/MainWindow.h \
+        ../include/Transformation/TransformationBase.h \
+        ../include/Transformation/TransformationHomogeneous.h \
+        ../include/Transformation/TransformationNormal.h
 
 SOURCES += \
         ../src/main.cpp \
         ../src/Transformation/TransformationWidget.cpp \
-        ../src/MainWindow.cpp
+        ../src/MainWindow.cpp \
+        ../src/Transformation/TransformationBase.cpp \
+        ../src/Transformation/TransformationHomogeneous.cpp \
+        ../src/Transformation/TransformationNormal.cpp
 
 FORMS += \
         ../rc/ui/mainwindow.ui \

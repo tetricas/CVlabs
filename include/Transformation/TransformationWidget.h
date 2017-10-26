@@ -4,6 +4,9 @@
 #include <QWidget>
 #include <QGenericMatrix>
 
+#include "TransformationNormal.h"
+#include "TransformationHomogeneous.h"
+
 namespace Ui {
 class TransformationWidget;
 }
@@ -29,28 +32,12 @@ private slots:
 
 private:
     void setupUi();
-    bool checkInput();
-    void getCoords();
-    void getParams();
-
-    void scaleProcess();
-    void rotateProcess();
-    void moveProcess();
-
-    void outputResults();
+    bool checkHomogeneous();
 
     Ui::TransformationWidget *m_ui;
 
     ETransformaions m_currentTransformation;
-    bool m_itHasLiterals;
-
-    QGenericMatrix<1, 2, qreal> m_inputVector;
-    QGenericMatrix<1, 2, qreal> m_coordsVector;
-    QGenericMatrix<2, 2, qreal> m_transformationMatrix;
-    QPair<qreal, qreal> m_params;
-
-    QPair<qreal, qreal> m_leftBottom;
-    QPair<qreal, qreal> m_topRight;
+    QSharedPointer<CTransformationBase> m_transformation;
 };
 
 #endif // TRANSFORMATIONWIDGET_H
