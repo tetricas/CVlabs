@@ -24,7 +24,7 @@ public:
     virtual void outputResults() = 0;
 
 protected:
-    QSharedPointer<Ui::TransformationWidget> m_ui;
+    Ui::TransformationWidget* m_ui;
     bool m_itHasLiterals;
 
     QPair<qreal, qreal> m_params;
