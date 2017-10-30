@@ -44,15 +44,16 @@ void CTransformationWidget::updateSettings( const QString& name )
 
 void CTransformationWidget::startProcessing()
 {
-    if( checkHomogeneous() )
+    if( !checkHomogeneous() )
     {
-        m_transformation = QSharedPointer<CTransformationHomogeneous>::create(m_ui);
-        qDebug() << "CTransformationHomogeneous";
+        QMessageBox::about( this, "Input", "Invalid input: H can not be equal 0!" );
+        return;
     }
-    else
+
+    if( m_transformation.isNull() )
     {
-        m_transformation = QSharedPointer<CTransformationNormal>::create(m_ui);
-        qDebug() << "CTransformationNormal";
+        QMessageBox::about( this, "Error", "Something went wrong!" );
+        return;
     }
 
     if( !m_transformation->checkInput( m_currentTransformation != ETransformaions::Rotate ) )
@@ -94,5 +95,15 @@ void CTransformationWidget::setupUi()
 
 bool CTransformationWidget::checkHomogeneous()
 {
-    return m_ui->zCoordEdit->toPlainText().toInt() != 1;
+    int hCoeff = m_ui->zCoordEdit->toPlainText().toInt();
+
+    m_transformation.reset();
+    if( hCoeff == 0 )
+        return false;
+    else if( hCoeff != 1 )
+        m_transformation = QSharedPointer<CTransformationHomogeneous>::create(m_ui, hCoeff);
+    else
+        m_transformation = QSharedPointer<CTransformationNormal>::create(m_ui);
+
+    return true;
 }

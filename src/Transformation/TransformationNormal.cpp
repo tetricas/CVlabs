@@ -9,6 +9,7 @@ CTransformationNormal::CTransformationNormal( Ui::TransformationWidget *ui ) :
 {
     m_inputVector.fill( 0 );
     m_coordsVector.fill( 0 );
+    m_transformationMatrix.fill( 0 );
 }
 
 void CTransformationNormal::getCoords()
