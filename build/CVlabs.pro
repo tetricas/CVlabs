@@ -20,7 +20,9 @@ HEADERS += \
         ../include/MainWindow.h \
         ../include/Transformation/TransformationBase.h \
         ../include/Transformation/TransformationHomogeneous.h \
-        ../include/Transformation/TransformationNormal.h
+        ../include/Transformation/TransformationNormal.h \
+        ../include/Segments/SegmentsWidget.h \
+        ../include/Segments/SegmentsFieldWidget.h
 
 SOURCES += \
         ../src/main.cpp \
@@ -28,8 +30,11 @@ SOURCES += \
         ../src/MainWindow.cpp \
         ../src/Transformation/TransformationBase.cpp \
         ../src/Transformation/TransformationHomogeneous.cpp \
-        ../src/Transformation/TransformationNormal.cpp
+        ../src/Transformation/TransformationNormal.cpp \
+        ../src/Segments/SegmentsWidget.cpp \
+        ../src/Segments/SegmentsFieldWidget.cpp
 
 FORMS += \
         ../rc/ui/mainwindow.ui \
-        ../rc/ui/TransformationWidget.ui
+        ../rc/ui/TransformationWidget.ui \
+        ../rc/ui/SegmentsWidget.ui

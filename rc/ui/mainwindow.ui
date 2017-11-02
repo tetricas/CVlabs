@@ -17,6 +17,9 @@
    <layout class="QGridLayout" name="gridLayout">
     <item row="0" column="0">
      <widget class="QTabWidget" name="tabWidget">
+      <property name="currentIndex">
+       <number>1</number>
+      </property>
       <widget class="QWidget" name="transformationsLab">
        <attribute name="title">
         <string>Tab 1</string>
@@ -27,10 +30,15 @@
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="anotherLab">
+      <widget class="QWidget" name="segmentsLab">
        <attribute name="title">
         <string>Tab 2</string>
        </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout">
+        <item>
+         <widget class="CSegmentsWidget" name="segmentsWidget" native="true"/>
+        </item>
+       </layout>
       </widget>
      </widget>
     </item>
@@ -40,9 +48,15 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
+   <class>CSegmentsWidget</class>
+   <extends>QWidget</extends>
+   <header location="global">../include/Segments/SegmentsWidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>CTransformationWidget</class>
    <extends>QWidget</extends>
-   <header location="global">Transformation/TransformationWidget.h</header>
+   <header location="global">../include/Transformation/TransformationWidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
