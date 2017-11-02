@@ -14,6 +14,8 @@ class CSegmentsWidget: public QWidget
 public:
     explicit CSegmentsWidget( QWidget *parent = 0 );
 
+    void setupCommunication();
+
 private:
     Ui::SegmentsWidget* m_ui;
 };

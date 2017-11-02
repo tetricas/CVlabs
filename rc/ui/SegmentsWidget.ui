@@ -17,7 +17,7 @@
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout" stretch="80,20">
      <item>
-      <widget class="CSegmentsFieldWidget" name="widget" native="true"/>
+      <widget class="CSegmentsFieldWidget" name="field" native="true"/>
      </item>
      <item>
       <layout class="QVBoxLayout" name="verticalLayout">
