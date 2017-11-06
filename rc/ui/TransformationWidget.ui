@@ -15,7 +15,7 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">
    <item>
-    <layout class="QVBoxLayout" name="verticalLayout" stretch="5,0,30,0,50">
+    <layout class="QVBoxLayout" name="verticalLayout" stretch="5,0,30,0,30,20">
      <item>
       <layout class="QHBoxLayout" name="inputLayout" stretch="30,30,10,10,10,10">
        <item>
@@ -151,6 +151,30 @@
            <pointsize>12</pointsize>
           </font>
          </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <item>
+        <widget class="QLabel" name="testLabel">
+         <property name="text">
+          <string/>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="resultLabel">
          <property name="text">
           <string/>
          </property>

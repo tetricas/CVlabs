@@ -9,6 +9,7 @@
 CTransformationWidget::CTransformationWidget( QWidget *parent ) :
     QWidget( parent ),
     m_ui( new Ui::TransformationWidget ),
+    m_hasResults( false ),
     m_currentTransformation( ETransformaions::Scale )
 {
     m_ui->setupUi(this);
@@ -81,6 +82,16 @@ void CTransformationWidget::startProcessing()
     }
 
     m_transformation->outputResults();
+    m_hasResults = true;
+}
+
+void CTransformationWidget::visualize()
+{
+    if( !m_hasResults )
+        return;
+
+    m_transformation->setTransformation();
+    m_ui->resultLabel->setPixmap( QPixmap(":/images/test.jpg").transformed(m_transform) );
 }
 
 void CTransformationWidget::setupUi()
@@ -89,8 +100,10 @@ void CTransformationWidget::setupUi()
     connect( m_ui->transformationComboBox, &QComboBox::currentTextChanged,
              this, &CTransformationWidget::updateSettings );
 
-    connect( m_ui->startBtn, &QPushButton::clicked,
-             this, &CTransformationWidget::startProcessing );
+    connect( m_ui->startBtn, &QPushButton::clicked, this, &CTransformationWidget::startProcessing );
+    connect( m_ui->visualizeBtn, &QPushButton::clicked, this, &CTransformationWidget::visualize );
+
+    m_ui->testLabel->setPixmap( QPixmap(":/images/test.jpg") );
 }
 
 bool CTransformationWidget::checkHomogeneous()
@@ -101,9 +114,9 @@ bool CTransformationWidget::checkHomogeneous()
     if( hCoeff == 0 )
         return false;
     else if( hCoeff != 1 )
-        m_transformation = QSharedPointer<CTransformationHomogeneous>::create(m_ui, hCoeff);
+        m_transformation = QSharedPointer<CTransformationHomogeneous>::create(m_ui, m_transform, hCoeff);
     else
-        m_transformation = QSharedPointer<CTransformationNormal>::create(m_ui);
+        m_transformation = QSharedPointer<CTransformationNormal>::create(m_ui, m_transform);
 
     return true;
 }

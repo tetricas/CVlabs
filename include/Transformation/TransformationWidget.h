@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include <QGenericMatrix>
+#include <QGraphicsView>
 
 #include "TransformationNormal.h"
 #include "TransformationHomogeneous.h"
@@ -29,6 +30,7 @@ public:
 private slots:
     void updateSettings( const QString& name );
     void startProcessing();
+    void visualize();
 
 private:
     void setupUi();
@@ -36,6 +38,9 @@ private:
 
     Ui::TransformationWidget *m_ui;
 
+    QSharedPointer<QGraphicsPixmapItem> item;
+    QTransform m_transform;
+    bool m_hasResults;
     ETransformaions m_currentTransformation;
     QSharedPointer<CTransformationBase> m_transformation;
 };

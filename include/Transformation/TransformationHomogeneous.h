@@ -8,7 +8,7 @@ class CTransformationHomogeneous: public CTransformationBase
 {
 
 public:
-    explicit CTransformationHomogeneous( Ui::TransformationWidget *ui, int coefficient );
+    explicit CTransformationHomogeneous( Ui::TransformationWidget *ui, QTransform& transformation, int coefficient );
 
     virtual void getCoords() override;
 
@@ -17,6 +17,7 @@ public:
     virtual void moveProcess() override;
 
     virtual void outputResults() override;
+    virtual void setTransformation() override;
 
 protected:
     QGenericMatrix<1, 3, qreal> m_inputVector;

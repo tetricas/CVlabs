@@ -3,8 +3,9 @@
 
 #include <QRegExp>
 
-CTransformationBase::CTransformationBase( Ui::TransformationWidget* ui ) :
-    m_ui(ui)
+CTransformationBase::CTransformationBase(Ui::TransformationWidget* ui , QTransform &transformation) :
+    m_ui(ui),
+    m_transformation( transformation )
 {
     m_leftBottom.first = m_topRight.second = 1;     //{{ 0, R }     first - row
     m_leftBottom.second = m_topRight.first = 0;     // { L, 0 }}    second - column

@@ -4,8 +4,8 @@
 #include <QRegExp>
 #include <QtMath>
 
-CTransformationNormal::CTransformationNormal( Ui::TransformationWidget *ui ) :
-    CTransformationBase( ui )
+CTransformationNormal::CTransformationNormal( Ui::TransformationWidget *ui, QTransform& transformation ) :
+    CTransformationBase( ui, transformation )
 {
     m_inputVector.fill( 0 );
     m_coordsVector.fill( 0 );
@@ -40,6 +40,7 @@ void CTransformationNormal::scaleProcess()
     m_transformationMatrix( 1, 1 ) = m_params.second;
 
     m_coordsVector = m_transformationMatrix * m_coordsVector;
+    m_isTranslation = false;
 }
 
 void CTransformationNormal::rotateProcess()
@@ -53,6 +54,7 @@ void CTransformationNormal::rotateProcess()
         m_transformationMatrix( m_topRight.first, m_topRight.second ) *= -1;
 
     m_coordsVector = m_transformationMatrix * m_coordsVector;
+    m_isTranslation = false;
 }
 
 void CTransformationNormal::moveProcess()
@@ -60,6 +62,11 @@ void CTransformationNormal::moveProcess()
     m_coordsVector( 0, 0 ) += m_params.first;
     m_coordsVector( 1, 0 ) += m_params.second;
     m_transformationMatrix.fill( 0 );
+    m_transformationMatrix( 0, 0 ) = m_transformationMatrix( 1, 1 ) = 1;
+
+    m_isTranslation = true;
+    m_dx = m_params.first;
+    m_dy = m_params.second;
 }
 
 void CTransformationNormal::outputResults()
@@ -82,4 +89,11 @@ void CTransformationNormal::outputResults()
     m_ui->inputLabel->setText( input );
     m_ui->transformLabel->setText( transformation );
     m_ui->outputLabel->setText( output );
+}
+
+void CTransformationNormal::setTransformation()
+{
+    m_transformation = QTransform( m_transformationMatrix( 0, 0 ), m_transformationMatrix( 0, 1 ),
+                                   m_transformationMatrix( 1, 0 ), m_transformationMatrix( 1, 1 ),
+                                   m_isTranslation? m_dx: 0, m_isTranslation? m_dy: 0 );
 }

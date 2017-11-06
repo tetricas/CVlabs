@@ -4,8 +4,8 @@
 #include <QRegExp>
 #include <QtMath>
 
-CTransformationHomogeneous::CTransformationHomogeneous(Ui::TransformationWidget *ui , int coefficient) :
-    CTransformationBase( ui ),
+CTransformationHomogeneous::CTransformationHomogeneous(Ui::TransformationWidget *ui , QTransform &transformation, int coefficient) :
+    CTransformationBase( ui, transformation ),
     m_coefficient( coefficient )
 {
     m_inputVector.fill( 0 );
@@ -102,4 +102,11 @@ void CTransformationHomogeneous::outputResults()
     m_ui->inputLabel->setText( input );
     m_ui->transformLabel->setText( transformation );
     m_ui->outputLabel->setText( output );
+}
+
+void CTransformationHomogeneous::setTransformation()
+{
+    m_transformation = QTransform( m_transformationMatrix( 0, 0 ), m_transformationMatrix( 0, 1 ), m_transformationMatrix( 0, 2 ),
+                                   m_transformationMatrix( 1, 0 ), m_transformationMatrix( 1, 1 ) , m_transformationMatrix( 1, 2 ),
+                                   m_transformationMatrix( 2, 0 ), m_transformationMatrix( 2, 1 ) );
 }

@@ -16,23 +16,23 @@ DESTDIR = $$PWD/../bin/CVlabs/debug
 INCLUDEPATH += ../include/
 
 HEADERS += \
-        ../include/Transformation/TransformationWidget.h \
-        ../include/MainWindow.h \
-        ../include/Transformation/TransformationBase.h \
-        ../include/Transformation/TransformationHomogeneous.h \
-        ../include/Transformation/TransformationNormal.h \
-        ../include/Segments/SegmentsWidget.h \
-        ../include/Segments/SegmentsFieldWidget.h
+    ../include/Transformation/TransformationWidget.h \
+    ../include/MainWindow.h \
+    ../include/Transformation/TransformationBase.h \
+    ../include/Transformation/TransformationHomogeneous.h \
+    ../include/Transformation/TransformationNormal.h \
+    ../include/Segments/SegmentsWidget.h \
+    ../include/Segments/SegmentsFieldWidget.h
 
 SOURCES += \
-        ../src/main.cpp \
-        ../src/Transformation/TransformationWidget.cpp \
-        ../src/MainWindow.cpp \
-        ../src/Transformation/TransformationBase.cpp \
-        ../src/Transformation/TransformationHomogeneous.cpp \
-        ../src/Transformation/TransformationNormal.cpp \
-        ../src/Segments/SegmentsWidget.cpp \
-        ../src/Segments/SegmentsFieldWidget.cpp
+    ../src/main.cpp \
+    ../src/Transformation/TransformationWidget.cpp \
+    ../src/MainWindow.cpp \
+    ../src/Transformation/TransformationBase.cpp \
+    ../src/Transformation/TransformationHomogeneous.cpp \
+    ../src/Transformation/TransformationNormal.cpp \
+    ../src/Segments/SegmentsWidget.cpp \
+    ../src/Segments/SegmentsFieldWidget.cpp
 
 FORMS += \
         ../rc/ui/mainwindow.ui \
