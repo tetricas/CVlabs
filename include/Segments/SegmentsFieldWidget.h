@@ -16,27 +16,32 @@ public slots:
     void clearField();
 
 protected:
-    void paintEvent( QPaintEvent* event );
-    void resizeEvent( QResizeEvent* event );
+    void paintEvent(QPaintEvent*);
+    void resizeEvent(QResizeEvent* event);
 
     void mousePressEvent( QMouseEvent* event );
     void mouseReleaseEvent( QMouseEvent* event );
     void mouseMoveEvent( QMouseEvent* event );
 
 private slots:
-    void gridTimerSlot();
+    void bresenhamTimerSlot();
 
 private:
+    void resetPoints();
+
     QPoint m_startPoint;
     QPoint m_endPoint;
+    bool m_isProcessing;
 
-    bool m_isHaveGrid;
-    bool m_isGridPainting;
-    size_t maxGridStepCount;
-    size_t m_gridStepCount;
-    size_t m_gridStep;
+    QVector<QPoint> m_bresenhamPoints;
+    QPoint m_diffPoint;
+    QPoint m_lengthPoint;
+    QPoint m_currentPoint;
+    int m_diff;
+    int m_length;
+    bool m_isXGreater;
 
-    QTimer m_gridTimer;
+    QTimer m_bresenhamTimer;
 };
 
 #endif // SEGMENTSFIELDWIDGET_H
