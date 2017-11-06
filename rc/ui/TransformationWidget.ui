@@ -17,7 +17,7 @@
    <item>
     <layout class="QVBoxLayout" name="verticalLayout" stretch="5,0,30,0,50">
      <item>
-      <layout class="QHBoxLayout" name="inputLayout">
+      <layout class="QHBoxLayout" name="inputLayout" stretch="30,30,10,10,10,10">
        <item>
         <widget class="QPlainTextEdit" name="xCoordEdit">
          <property name="placeholderText">
@@ -53,6 +53,13 @@
         <widget class="QPushButton" name="startBtn">
          <property name="text">
           <string>Transform</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="visualizeBtn">
+         <property name="text">
+          <string>Visualize</string>
          </property>
         </widget>
        </item>

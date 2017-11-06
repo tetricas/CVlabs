@@ -18,11 +18,11 @@
     <item row="0" column="0">
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="transformationsLab">
        <attribute name="title">
-        <string>Tab 1</string>
+        <string>Transformations</string>
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_2">
         <item>
@@ -32,7 +32,7 @@
       </widget>
       <widget class="QWidget" name="segmentsLab">
        <attribute name="title">
-        <string>Tab 2</string>
+        <string>Segments</string>
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout">
         <item>

@@ -30,9 +30,13 @@ void CTransformationHomogeneous::getCoords()
         digitReg.indexIn( m_ui->yCoordEdit->toPlainText() );
         m_coordsVector( 1, 0 ) = digitReg.cap(1).toInt();
     }
-    m_coordsVector( 0, 0 ) = m_inputVector( 0, 0 ) = m_coordsVector( 0, 0 ) / m_coefficient;
-    m_coordsVector( 1, 0 ) = m_inputVector( 1, 0 ) = m_coordsVector( 1, 0 ) / m_coefficient;
-    m_coordsVector( 2, 0 ) = m_inputVector( 2, 0 ) = 1;
+    m_inputVector( 0, 0 ) = m_coordsVector( 0, 0 );
+    m_inputVector( 1, 0 ) = m_coordsVector( 1, 0 );
+    m_inputVector( 2, 0 ) = m_coefficient;
+
+    m_coordsVector( 0, 0 ) /= m_coefficient;
+    m_coordsVector( 1, 0 ) /= m_coefficient;
+    m_coordsVector( 2, 0 ) = 1;
 }
 
 void CTransformationHomogeneous::scaleProcess()
@@ -72,6 +76,10 @@ void CTransformationHomogeneous::outputResults()
 {
     QString input, transformation, output;
     QTextStream streamIn(&input), streamTrans(&transformation), streamOut(&output);
+
+    m_coordsVector( 0, 0 ) *= m_coefficient;
+    m_coordsVector( 1, 0 ) *= m_coefficient;
+    m_coordsVector( 2, 0 ) = m_coefficient;
 
     streamIn << "Input vector: \n"
              << "|\t "<< m_inputVector( 0, 0 ) << (m_itHasLiterals? "x": " ")<< "\t|\n"
