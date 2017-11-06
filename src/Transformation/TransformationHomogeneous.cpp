@@ -52,9 +52,8 @@ void CTransformationHomogeneous::scaleProcess()
 void CTransformationHomogeneous::rotateProcess()
 {
     m_transformationMatrix.fill( 0 );
-    m_transformationMatrix( 0, 0 ) = m_transformationMatrix( 1, 1 ) = qCos( m_params.first );
-    m_transformationMatrix( 0, 1 ) = qSin( m_params.first );
-    m_transformationMatrix( 1, 0 ) = - m_transformationMatrix( 0, 1 );
+    m_transformationMatrix( 0, 0 ) = m_transformationMatrix( 1, 1 ) = qCos( qDegreesToRadians( m_params.first ) );
+    m_transformationMatrix( 1, 0 ) = m_transformationMatrix( 0, 1 ) = qSin( qDegreesToRadians( m_params.first ) );
     m_transformationMatrix( 2, 2 ) = 1;
 
     m_coordsVector = m_transformationMatrix * m_coordsVector;

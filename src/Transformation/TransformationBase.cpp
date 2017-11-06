@@ -14,9 +14,9 @@ CTransformationBase::CTransformationBase(Ui::TransformationWidget* ui , QTransfo
 
 bool CTransformationBase::checkInput(bool isInput)
 {
-    QRegExp xCoorgReg("(\\d+|-\\d+)(x)"),
-            yCoorgReg("(\\d+|-\\d+)(y)"),
-            digitReg("(\\d+|-\\d+)");
+    QRegExp xCoorgReg("([+-]?(\\d+))(x)"),
+            yCoorgReg("([+-]?(\\d+))(y)"),
+            digitReg("([+-]?(\\d*\\.)?\\d+)");
 
     // at the following comments "*" - any digit
     if( ( xCoorgReg.exactMatch( m_ui->xCoordEdit->toPlainText() ) &&
@@ -45,6 +45,6 @@ bool CTransformationBase::checkInput(bool isInput)
 
 void CTransformationBase::getParams()
 {
-    m_params = QPair<qreal, qreal>( m_ui->firstParameter->toPlainText().toInt(),
-                                    m_ui->secondParameter->toPlainText().toInt() );
+    m_params = QPair<qreal, qreal>( m_ui->firstParameter->toPlainText().toFloat(),
+                                    m_ui->secondParameter->toPlainText().toFloat() );
 }

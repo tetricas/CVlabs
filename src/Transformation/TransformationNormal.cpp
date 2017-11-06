@@ -45,8 +45,9 @@ void CTransformationNormal::scaleProcess()
 
 void CTransformationNormal::rotateProcess()
 {
-    m_transformationMatrix( 0, 0 ) = m_transformationMatrix( 1, 1 ) = qCos( m_params.first );
-    m_transformationMatrix( 0, 1 ) = m_transformationMatrix( 1, 0 ) = qSin( m_params.first );
+    qreal rounded = qAbs( m_params.first );
+    m_transformationMatrix( 0, 0 ) = m_transformationMatrix( 1, 1 ) = qCos( qDegreesToRadians( rounded ) );
+    m_transformationMatrix( 0, 1 ) = m_transformationMatrix( 1, 0 ) = qSin( qDegreesToRadians( rounded ) );
 
     if( m_params.first < 0 )
         m_transformationMatrix( m_leftBottom.first, m_leftBottom.second ) *= -1;
