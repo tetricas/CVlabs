@@ -38,3 +38,6 @@ FORMS += \
         ../rc/ui/mainwindow.ui \
         ../rc/ui/TransformationWidget.ui \
         ../rc/ui/SegmentsWidget.ui
+
+RESOURCES += \
+    ../rc/images.qrc
