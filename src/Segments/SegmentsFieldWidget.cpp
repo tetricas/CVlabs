@@ -8,6 +8,8 @@ CSegmentsFieldWidget::CSegmentsFieldWidget( QWidget* parent ) :
     QWidget( parent ),
     m_isProcessing( false )
 {
+    resetPoints();
+
     m_bresenhamTimer.setInterval( 10 );
     connect( &m_bresenhamTimer, &QTimer::timeout, this, &CSegmentsFieldWidget::bresenhamTimerSlot );
 }
