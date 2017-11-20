@@ -12,7 +12,7 @@ class CSegmentsWidget: public QWidget
     Q_OBJECT
 
 public:
-    explicit CSegmentsWidget( QWidget *parent = 0 );
+    explicit CSegmentsWidget( QWidget *parent = nullptr );
 
     void setupCommunication();
 

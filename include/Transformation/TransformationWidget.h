@@ -24,7 +24,7 @@ class CTransformationWidget: public QWidget
     };
 
 public:
-    explicit CTransformationWidget( QWidget *parent = 0 );
+    explicit CTransformationWidget( QWidget *parent = nullptr );
     ~CTransformationWidget();
 
 private slots:
