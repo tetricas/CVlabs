@@ -46,10 +46,11 @@
        </attribute>
        <layout class="QHBoxLayout" name="horizontalLayout">
         <item>
-         <widget class="CFractalsWidget" name="fractalsWidget" native="true"/>
-        </item>
-        <item>
-         <widget class="QWidget" name="widget" native="true"/>
+         <widget class="QPushButton" name="fractalsButton">
+          <property name="text">
+           <string>Show</string>
+          </property>
+         </widget>
         </item>
        </layout>
       </widget>
@@ -70,12 +71,6 @@
    <class>CTransformationWidget</class>
    <extends>QWidget</extends>
    <header location="global">../include/Transformation/TransformationWidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>CFractalsWidget</class>
-   <extends>QWidget</extends>
-   <header location="global">../include/Fractals/FractalsWidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
