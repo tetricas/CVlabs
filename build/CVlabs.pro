@@ -22,7 +22,8 @@ HEADERS += \
     ../include/Transformation/TransformationHomogeneous.h \
     ../include/Transformation/TransformationNormal.h \
     ../include/Segments/SegmentsWidget.h \
-    ../include/Segments/SegmentsFieldWidget.h
+    ../include/Segments/SegmentsFieldWidget.h \
+    ../include/Fractals/FractalsWidget.h
 
 SOURCES += \
     ../src/main.cpp \
@@ -32,7 +33,8 @@ SOURCES += \
     ../src/Transformation/TransformationHomogeneous.cpp \
     ../src/Transformation/TransformationNormal.cpp \
     ../src/Segments/SegmentsWidget.cpp \
-    ../src/Segments/SegmentsFieldWidget.cpp
+    ../src/Segments/SegmentsFieldWidget.cpp \
+    ../src/Fractals/FractalsWidget.cpp
 
 FORMS += \
         ../rc/ui/mainwindow.ui \
