@@ -43,3 +43,5 @@ FORMS += \
 
 RESOURCES += \
     ../rc/images.qrc
+
+LIBS += -lOpenGL32
