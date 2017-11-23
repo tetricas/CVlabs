@@ -2,7 +2,6 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include "Fractals/FractalsWidget.h"
 
 namespace Ui {
 class MainWindow;
@@ -18,7 +17,6 @@ public:
 
 private:
     Ui::MainWindow *m_ui;
-    QSharedPointer<CFractalsWidget> m_fractalWidget;
 };
 
 #endif // MAINWINDOW_H

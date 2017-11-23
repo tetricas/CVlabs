@@ -1,6 +1,6 @@
 #include "Fractals/FractalsWidget.h"
 
-CFractalsWidget::CFractalsWidget(QOpenGLWidget *parent) :
+CFractalsWidget::CFractalsWidget(QWidget *parent) :
     QOpenGLWidget(parent)
 {
 }
