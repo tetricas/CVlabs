@@ -1,16 +1,56 @@
 #include "Fractals/FractalsWidget.h"
 
+#include <GL/glu.h>
+#include <QTimer>
+
 #define MAX_SUBDIVISION 7
 
+//Положение камеры
+GLfloat eye[3] = { 0, 0, 9.0 };
+//Положение центра экрана
+GLfloat center[3] = {0, 0, -1 };
+//Координаты вектора задающего поворот сцены
+GLfloat up[3] = { 0, 1, 0};
+//Положение освещения
+GLfloat light0Pos[4] = { 10, 10, 100, 1 };
+//Передний и задний план
+GLfloat planes[2] = {1, 1000};
+//Флаг отвечающий за автоматическое вращение
+bool autoRotate = false;
+//Переменная для сохранения предыдущего времени вызова
+unsigned long last_idle_time;
+//Массив углов поворота текущего положения куба
+GLfloat rot[3] = { 15.0, 45.0, 15.0 };
+//Текущий уровень вложенности куба
+int subdivisions = 0;
+//Флаг отвечающий за инвертирование.
+bool invert = false;
+//Состояние кнопок мыши
+bool mouseButtonDown[3] = { false };
+//Координаты щелчка мышью
+int mouseButtonClick[3][2] = { { 0, 0 }, {0, 0}, {0, 0} };
+
 CFractalsWidget::CFractalsWidget(QWidget *parent) :
-    QOpenGLWidget(parent)
+    QGLWidget(QGLFormat(QGL::DoubleBuffer| QGL::DepthBuffer | QGL::Rgba), parent)
 {
+    QTimer *timer = new QTimer(this);
+    connect(timer, SIGNAL(timeout()), this, SLOT(Animate()));
+    timer->start(10);
+
+    // синхронизация кадров с дисплеем:
+    QGLFormat frmt; // создать формат по умолчанию
+    frmt.setSwapInterval(1); // установить синхронизацию в формат
+    setFormat(frmt); // установить формат в контекст
 }
 
 void CFractalsWidget::initializeGL()
 {
     initializeOpenGLFunctions();
     last_idle_time = clock();
+
+    // цвет для очистки буфера изображения - будет просто фон окна
+    qglClearColor(Qt::black);
+
     glEnable(GL_DEPTH_TEST);
     //Сравнение "если меньше"
     glDepthFunc(GL_LESS);
@@ -20,6 +60,9 @@ void CFractalsWidget::initializeGL()
     glEnable(GL_LIGHTING);
     //Включаем 0 точку освещения
     glEnable(GL_LIGHT0);
+
+    GLfloat aLightPosition[] = {0.0f,0.3f,1.0f,0.0f};
+    glLightfv(GL_LIGHT0, GL_SPOT_DIRECTION, aLightPosition);
 }
 
 void CFractalsWidget::resizeGL(GLint iWidth, GLint iHeight)
@@ -31,22 +74,21 @@ void CFractalsWidget::resizeGL(GLint iWidth, GLint iHeight)
     //Делаем ее единичной
     glLoadIdentity();
     //Задаем перспективу
-    //gluPerspective(45.0, (float)iWidth/iHeight, planes[0], planes[1]);
+    gluPerspective(45.0, (float)iWidth/iHeight, planes[0], planes[1]);
     //Загружаем объектно-видовую матрицу
     glMatrixMode(GL_MODELVIEW);
-    //Обновляем переменные
-    width = iWidth;
-    height = iHeight;
 }
 
 void CFractalsWidget::paintGL()
 {
     //Очищаем изображение
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
     //Загружаем единичную матрицу
+    glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
     //Переводим внешнюю систему координат в систему координат камеры
-    //gluLookAt(eye[0], eye[1], eye[2], center[0], center[1], center[2], up[0], up[1], up[2]);
+    gluLookAt(eye[0], eye[1], eye[2], center[0], center[1], center[2], up[0], up[1], up[2]);
     //Добавляем освещение
     glLightfv(GL_LIGHT0, GL_POSITION, light0Pos);
     //Поворачиваем сцену по данным из rot[]
@@ -116,54 +158,32 @@ void CFractalsWidget::BuildSponge(GLfloat size, int step)
     //Сохраняем матрицу
     glPushMatrix();
     //Проверяем уровень вложенности
-    if(step > 0) {
+    if(step > 0)
+    {
         //Если больше 0, то нужно делить куб на части
         //Делим текущий размер на 3
         GLfloat delta = size/3.0;
 
-        //Обычный куб
-        //Нижняя сторона
-        //{-1, -1, -1} {0, -1, -1} {1, -1, -1}	задняя часть
-        //{-1, -1, 0}				{1, -1, 0}	середина
-        //{-1, -1, 1} {0, -1, 1} {1, -1, 1}		передняя часть
-
-        //Середина
-        //{-1, 0, -1}		{1, 0, -1}			задняя часть
-        //										середина
-        //{-1, 0, 1}		{1, 0, 1}			передняя часть
-
-        //Верхняя сторона
-        //{-1, 1, -1} {0, 1, -1} {1, 1, -1}		задняя часть
-        //{-1, 1, 0}			{1, -1, 0}		середина
-        //{-1, 1, 1} {0, 1, 1} {1, 1, 1}		передняя часть
-        //
-        //Инвертированный куб
-        //Нижняя сторона y=-1
-        //										задняя часть z=-1
-        //			{0, -1, 0}					середина z=0
-        //										передняя часть z=1
-        //Середина y=0
-        //			{0, 0, -1}					задняя часть z=-1
-        //{-1, 0, 0} {0, 0, 0} {1, 0, 0}		середина z=0
-        //			{0, 0, 1}					передняя часть z=1
-        //Верхняя сторона y=1
-        //										задняя часть z=-1
-        //			{0, 1, 0}					середина z=0
-        //										передняя часть z=1
-
         //Цикл по сторонам
-        for(y = -1; y <= 1; y++) {
+        for(y = -1; y <= 1; y++)
+        {
             //Цикл из задней части к передней
-            for(z=-1; z <= 1; z++) {
+            for(z=-1; z <= 1; z++)
+            {
                 //Цикл с лева на право
-                for(x=-1; x <= 1; x++) {
+                for(x=-1; x <= 1; x++)
+                {
                     //Проверяем нужно ли рисовать. Два больших условия которые проверяют
                     //для инвертированного и неинвертированного куба, если рисовать не нужно
                     //переходим на следующий шаг цикла
-                    if(!invert){
-                        if((z == 0 && x == 0) || (y == 0 && (x == 0 || z == 0))) continue;
-                    } else {
-                        if((y!=0 && z!=0) || (y!=0 && z==0 && x!=0) || (y==0 && z!=0 && x!=0)) continue;
+                    if(!invert)
+                    {
+                        if((z == 0 && x == 0) || (y == 0 && (x == 0 || z == 0)))
+                            continue;
+                    } else
+                    {
+                        if((y!=0 && z!=0) || (y!=0 && z==0 && x!=0) || (y==0 && z!=0 && x!=0))
+                            continue;
                     }
                     //Сохраняем текущую матрицу
                     glPushMatrix();
@@ -176,7 +196,8 @@ void CFractalsWidget::BuildSponge(GLfloat size, int step)
                 }
             }
         }
-    } else {
+    } else
+    {
         //Если шаг = 0, значит вложений больше нет, просто рисуем куб
         DrawCube(size);
     }
@@ -192,4 +213,24 @@ void CFractalsWidget::RenderObject()
     BuildSponge(4.0, subdivisions);
     //Возвращаем сохраненную матрицу
     glPopMatrix();
+}
+
+void CFractalsWidget::Animate()
+{
+    int i;
+    float dt;
+    //Получаем текущее время
+    unsigned long time_now = clock();
+    //Вычисляем промежуток времени от предыдущего вызова
+    dt = (float)(time_now - last_idle_time);
+    //Если больше 25мс значит нужно повернуть и перерисовать
+    if(dt/CLOCKS_PER_SEC >= 0.025)
+    {
+        //Увеличиваем градус поворота для 3-х осей
+        for(i = 0; i < 3; i++)
+            rot[i] = fmod(rot[i]+1.0f, 360.0f);
+        //Сохраняем текущее время
+        last_idle_time = time_now;
+        updateGL();
+    }
 }
