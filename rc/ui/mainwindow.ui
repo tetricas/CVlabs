@@ -18,7 +18,7 @@
     <item row="0" column="0">
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>2</number>
+       <number>3</number>
       </property>
       <widget class="QWidget" name="transformationsLab">
        <attribute name="title">
@@ -50,6 +50,20 @@
         </item>
        </layout>
       </widget>
+      <widget class="QWidget" name="gaussianLab">
+       <attribute name="title">
+        <string>Gaussian Blur</string>
+       </attribute>
+       <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <item>
+         <widget class="QQuickWidget" name="gaussianWidget">
+          <property name="resizeMode">
+           <enum>QQuickWidget::SizeRootObjectToView</enum>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
      </widget>
     </item>
    </layout>
@@ -57,6 +71,11 @@
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
+  <customwidget>
+   <class>QQuickWidget</class>
+   <extends>QWidget</extends>
+   <header>QtQuickWidgets/QQuickWidget</header>
+  </customwidget>
   <customwidget>
    <class>CSegmentsWidget</class>
    <extends>QWidget</extends>

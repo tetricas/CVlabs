@@ -6,6 +6,8 @@ CMainWindow::CMainWindow(QWidget *parent) :
     m_ui(new Ui::MainWindow)
 {
     m_ui->setupUi(this);
+
+    m_ui->gaussianWidget->setSource(QUrl(QStringLiteral("qrc:/qml/GaussianBlurScreen.qml")));
 }
 
 CMainWindow::~CMainWindow()

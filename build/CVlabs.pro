@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT += core gui opengl
+QT += core gui widgets opengl quickwidgets qml quick
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -42,6 +42,7 @@ FORMS += \
         ../rc/ui/SegmentsWidget.ui
 
 RESOURCES += \
-    ../rc/images.qrc
+    ../rc/images.qrc \
+    ../rc/qml.qrc
 
 LIBS += -lOpenGL32 -lglu32
